@@ -8,6 +8,14 @@ container_name=example_testdb
 schema=example
 pw=root
 
+function printHelp() {
+	echo "options:" 
+	echo "-t|--test"
+	echo "-r|--run"
+	echo "-k|--kill"
+	echo "-i|--inspect"
+}
+
 while [[ ! $# -eq 0 ]]
 do
 key="$1"
@@ -21,8 +29,8 @@ case $key in
     exit
     ;;
     -k|--kill)
-	docker kill "$container_name"
-	docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs docker rm
+	docker kill "$container_name" && docker rm "$container_name"
+	# more agressive: docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs docker rm
 	exit
     ;;
     -i|--inspect)
@@ -30,14 +38,11 @@ case $key in
 	exit
     ;;
 	*)
-    # unknown option
-	echo "options:" 
-	echo "-t|--test"
-	echo "-r|--run"
-	echo "-k|--kill"
-	echo "-i|--inspect"
+	printHelp
 	exit
     ;;
 esac
 shift # past argument or value
 done
+
+printHelp
