@@ -7,6 +7,8 @@ data=$(pwd)/data
 container_name=example_testdb
 schema=example
 pw=root
+ip=$(docker-machine ip default)
+port=33000
 
 function printHelp() {
 	echo "options:" 
@@ -25,7 +27,8 @@ case $key in
 	exit
     ;;
 	-r|--run)
-    docker run --name "$container_name" -d -v "$data":/docker-entrypoint-initdb.d -e MYSQL_DATABASE="$schema" -e MYSQL_ROOT_PASSWORD="$pw" mysql
+    docker run -p 33000:3306 --name "$container_name" -d -v "$data":/docker-entrypoint-initdb.d -e MYSQL_DATABASE="$schema" -e MYSQL_ROOT_PASSWORD="$pw" mysql
+	echo "mysql db running on $ip:$port"
     exit
     ;;
     -k|--kill)
