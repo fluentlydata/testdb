@@ -27,7 +27,9 @@ case $key in
 	exit
     ;;
 	-r|--run)
-    docker run -p 33000:3306 --name "$container_name" -d -v "$data":/docker-entrypoint-initdb.d -e MYSQL_DATABASE="$schema" -e MYSQL_ROOT_PASSWORD="$pw" mysql
+    # thanks to https://stackoverflow.com/questions/49945649/mysql-error-authentication-plugin-caching-sha2-password-cannot-be-loaded
+    # "--default-authentication-plugin=mysql_native_password" is needed in order to be able to connect by a local non-docker mysql instance
+    docker run -p 33000:3306 --name "$container_name" -d -v "$data":/docker-entrypoint-initdb.d -e MYSQL_DATABASE="$schema" -e MYSQL_ROOT_PASSWORD="$pw" mysql:8  --default-authentication-plugin=mysql_native_password
 	echo "mysql db running on $ip:$port"
     exit
     ;;
